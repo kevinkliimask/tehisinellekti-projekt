@@ -9,7 +9,7 @@ import estnltk
 filters = ["prill", "päikeseprill", "kübar", "kiiver", "nokamüts", "mask"]
 head_filters = ["kübar", "kiiver", "nokamüts"]
 eye_filters = ["prill", "päikeseprill"]
-mask_filters = ["mask"]
+mask_filters = ["mask", "vunts"]
 
 
 def get_filters():
