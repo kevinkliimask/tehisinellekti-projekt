@@ -34,7 +34,6 @@ def morph_filters():
 
 
 def get_command(analysis, given_filters):
-    print(given_filters, analysis.words.lemma)
     for lemma in analysis.words.lemma:
         for word in lemma:
             if word in given_filters:
@@ -53,7 +52,6 @@ def get_response(text, command):
         regex = "lõpetama|aitama|eemaldama|võtma|kustutama|filter|valima|" + "|".join(filters)
 
         analysis = estnltk.Text(text).tag_layer()
-        print(analysis.words.lemma)
 
         if any(any(re.search(regex, word) for word in lemma) for lemma in analysis.words.lemma):
             if any(any(re.search("lõpetama", word) for word in lemma) for lemma in analysis.words.lemma):
@@ -66,7 +64,7 @@ def get_response(text, command):
 
             elif any(any(word in head_filters for word in lemma) for lemma in analysis.words.lemma):
                 command = get_command(analysis, head_filters)
-                response = f"Selge, panen Teie pea peale {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
+                response = f"Panen Teie pea peale {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
                            f"Millist filtrit nüüd soovite?"
 
             elif any(any(word in eye_filters for word in lemma) for lemma in analysis.words.lemma):
@@ -76,7 +74,7 @@ def get_response(text, command):
 
             elif any(any(word in face_filters for word in lemma) for lemma in analysis.words.lemma):
                 command = get_command(analysis, face_filters)
-                response = f"Selge, panen Teie näole {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
+                response = f"Teie näole tekib nüüd {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filter. " \
                            f"Millist filtrit nüüd soovite?"
 
             elif any(any(re.search("aitama|filter|valima", word) for word in lemma) for lemma in analysis.words.lemma):
