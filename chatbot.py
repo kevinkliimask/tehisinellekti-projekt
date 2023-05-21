@@ -50,7 +50,7 @@ def get_intro():
 def get_response(text, command):
     response = "Vabandust, ei saanud aru. Palun öelge uuesti."
     if text != "":
-        regex = "lõpetama|aitama|eemaldama|võtma|kustutama|filter|valima" + "|".join(filters)
+        regex = "lõpetama|aitama|eemaldama|võtma|kustutama|filter|valima|" + "|".join(filters)
 
         analysis = estnltk.Text(text).tag_layer()
         print(analysis.words.lemma)
@@ -83,3 +83,5 @@ def get_response(text, command):
                 response = f"Te saate kasutada {morph_filters()} filtreid."
 
     return command, response
+
+get_response("aita prillid", "")
