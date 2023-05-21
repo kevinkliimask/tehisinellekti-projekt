@@ -6,10 +6,10 @@ import re
 
 import estnltk
 
-filters = ["prill", "päikeseprill", "kübar", "kiiver", "nokamüts", "mask", "vunts"]
-head_filters = ["kübar", "kiiver", "nokamüts"]
+filters = ["prill", "päikeseprill", "kübar", "kiiver", "nokamüts", "mask", "vunts", "deemon", "süda", "koer", "kloun"]
+head_filters = ["kübar", "kiiver", "nokamüts", "süda", "deemon"]
 eye_filters = ["prill", "päikeseprill"]
-face_filters = ["mask", "vunts"]
+face_filters = ["mask", "vunts", "koer", "kloun"]
 
 
 def get_filters():
