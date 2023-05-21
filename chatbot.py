@@ -83,5 +83,3 @@ def get_response(text, command):
                 response = f"Te saate kasutada {morph_filters()} filtreid."
 
     return command, response
-
-get_response("aita prillid", "")
