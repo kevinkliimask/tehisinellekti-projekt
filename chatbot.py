@@ -6,10 +6,10 @@ import re
 
 import estnltk
 
-filters = ["prill", "päikeseprill", "kübar", "kiiver", "nokamüts", "mask"]
+filters = ["prill", "päikeseprill", "kübar", "kiiver", "nokamüts", "mask", "vunts"]
 head_filters = ["kübar", "kiiver", "nokamüts"]
 eye_filters = ["prill", "päikeseprill"]
-mask_filters = ["mask", "vunts"]
+face_filters = ["mask", "vunts"]
 
 
 def get_filters():
@@ -50,8 +50,8 @@ def get_response(input):
             response = f"Selge, panen Teie silmadele {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
                        f"Millist filtrit nüüd soovite?"
 
-        if any(any(word in mask_filters for word in lemma) for lemma in analysis.words.lemma):
-            command = get_command(analysis, mask_filters)
+        if any(any(word in face_filters for word in lemma) for lemma in analysis.words.lemma):
+            command = get_command(analysis, face_filters)
             response = f"Selge, panen Teie näole {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
                        f"Millist filtrit nüüd soovite?"
 
