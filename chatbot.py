@@ -16,43 +16,70 @@ def get_filters():
     return filters
 
 
-def get_command(analysis, filters):
+def get_head_filters():
+    return head_filters
+
+
+def get_eye_filters():
+    return eye_filters
+
+
+def get_face_filters():
+    return face_filters
+
+
+def morph_filters():
+    return ", ".join(estnltk.vabamorf.morf.synthesize(word, 'sg g')[0].strip() for word in filters[:len(filters) - 1]) \
+        + f" ja {estnltk.vabamorf.morf.synthesize(filters[-1], 'sg g')[0].strip()}"
+
+
+def get_command(analysis, given_filters):
+    print(given_filters, analysis.words.lemma)
     for lemma in analysis.words.lemma:
         for word in lemma:
-            if word in filters:
+            if word in given_filters:
                 return word
 
     return None
 
 
-def get_response(input):
-    command = ""
+def get_intro():
+    return "Tere, millist filtrit te soovite?"
+
+
+def get_response(text, command):
     response = "Vabandust, ei saanud aru. Palun öelge uuesti."
-    if input == "_____":
-        return "", "Tere, millist filtrit te soovite? "
+    if text != "":
+        regex = "lõpetama|aitama|eemaldama|võtma|kustutama|filter|valima" + "|".join(filters)
 
-    regex = "lõpetama|aitama|" + "|".join(filters)
+        analysis = estnltk.Text(text).tag_layer()
+        print(analysis.words.lemma)
 
-    analysis = estnltk.Text(input).tag_layer()
+        if any(any(re.search(regex, word) for word in lemma) for lemma in analysis.words.lemma):
+            if any(any(re.search("lõpetama", word) for word in lemma) for lemma in analysis.words.lemma):
+                command = "exit"
+                response = "Nägemist!"
 
-    if any(any(re.search(regex, word) for word in lemma) for lemma in analysis.words.lemma):
-        if any(any(re.search("lõpetama|aitama", word) for word in lemma) for lemma in analysis.words.lemma):
-            command = "exit"
-            response = "Nägemist!"
+            elif any(any(re.search("eemaldama|kustutama", word) for word in lemma) for lemma in analysis.words.lemma):
+                command = ""
+                response = "Eemaldasin Teilt filtri. Millist filtrit nüüd soovite?"
 
-        if any(any(word in head_filters for word in lemma) for lemma in analysis.words.lemma):
-            command = get_command(analysis, head_filters)
-            response = f"Selge, panen Teie pea peale {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
-                       f"Millist filtrit nüüd soovite?"
+            elif any(any(word in head_filters for word in lemma) for lemma in analysis.words.lemma):
+                command = get_command(analysis, head_filters)
+                response = f"Selge, panen Teie pea peale {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
+                           f"Millist filtrit nüüd soovite?"
 
-        if any(any(word in eye_filters for word in lemma) for lemma in analysis.words.lemma):
-            command = get_command(analysis, eye_filters)
-            response = f"Selge, panen Teie silmadele {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
-                       f"Millist filtrit nüüd soovite?"
+            elif any(any(word in eye_filters for word in lemma) for lemma in analysis.words.lemma):
+                command = get_command(analysis, eye_filters)
+                response = f"Selge, panen Teie silmadele {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
+                           f"Millist filtrit nüüd soovite?"
 
-        if any(any(word in face_filters for word in lemma) for lemma in analysis.words.lemma):
-            command = get_command(analysis, face_filters)
-            response = f"Selge, panen Teie näole {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
-                       f"Millist filtrit nüüd soovite?"
+            elif any(any(word in face_filters for word in lemma) for lemma in analysis.words.lemma):
+                command = get_command(analysis, face_filters)
+                response = f"Selge, panen Teie näole {estnltk.vabamorf.morf.synthesize(command, 'sg g')[0].strip()} filtri. " \
+                           f"Millist filtrit nüüd soovite?"
+
+            elif any(any(re.search("aitama|filter|valima", word) for word in lemma) for lemma in analysis.words.lemma):
+                response = f"Te saate kasutada {morph_filters()} filtreid."
 
     return command, response
